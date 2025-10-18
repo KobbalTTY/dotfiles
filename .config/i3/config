@@ -29,7 +29,7 @@ exec --nn-startup-id xsetroot -solid black
 exec --no-startup-id xset s off -dpms s noblank
 exec --no-startup-id picom
 exec_always --no-startup-id pkill unclutter || true; unclutter -idle 1 -root
-exec_always --no-startup-id pgrep wezterm || wezterm start
+exec_always --no-startup-id pgrep wezterm || wezterm start zsh -ic vim
 assign [instance="brave-browser"] $ws2
 
 bindsym $mod+u scratchpad show

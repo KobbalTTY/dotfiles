@@ -126,5 +126,3 @@ if [[ $SPLASH -eq 1 ]]; then
     -resize 256x256 \
     jpg:- | wezterm imgcat
 fi
-
-
