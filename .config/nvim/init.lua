@@ -1,3 +1,5 @@
+vim.o.autochdir = true
+
 vim.o.ignorecase = true
 
 vim.o.number         = true
@@ -29,6 +31,7 @@ vim.pack.add({
   { src = "https://github.com/brenoprata10/nvim-highlight-colors" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/lervag/vimtex" },
+  { src = "https://github.com/akinsho/toggleterm.nvim" },
 })
 
 require "mini.ai".setup()
@@ -51,6 +54,8 @@ require "mini.jump2d".setup({
   spotter = require "mini.jump2d".builtin_opts.word_start.spotter,
   labels = 'nrtshaeibldwfouj', -- easy spots for graphite layout
 })
+
+require "toggleterm".setup()
 
 require "nvim-treesitter.configs".setup {
   ensure_installed = {
@@ -100,6 +105,7 @@ map({'n'}, '<leader>q', function() vim.cmd("q") end)
 map({'n'}, '<leader>w', vim.cmd.update)
 map({'n'}, 'gT', vim.cmd.bprevious)
 map({'n'}, 'gt', vim.cmd.bnext)
+map({'t'}, '<C-s>', '<C-\\><C-n>')
 map({'n', 'v'}, '<leader>y', '"+y')
 map({'n', 'v'}, '<leader>p', '"+p')
 map({'n', 'v'}, 'n', ":norm ")
@@ -109,6 +115,7 @@ map({'n'}, '<leader>lf', vim.lsp.buf.format)
 map({'n'}, '<leader>tl', function() vim.cmd("set list!") end)
 map({'n'}, '<leader>tn', function() vim.cmd("NeoCodeium toggle") end)
 map({'n'}, '<leader>tt', function() vim.cmd("TypstPreviewToggle") end)
+map({'n'}, '<leader>tv', function() vim.cmd(":ToggleTerm direction=vertical size=80") end)
 map({'n'}, '<leader>vr', function() vim.cmd("source $MYVIMRC") end)
 map({'n'}, '<leader>fc', function() vim.cmd("lua MiniFiles.open()") end)
 map({'n'}, '<leader>fp', function() vim.cmd("lua MiniFiles.open('~/personal/')") end)
