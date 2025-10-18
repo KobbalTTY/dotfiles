@@ -114,13 +114,14 @@ map({'n', 'v'}, 'n', ":norm ")
 map({'n'}, '<leader>lf', vim.lsp.buf.format)
 map({'n'}, '<leader>tl', function() vim.cmd("set list!") end)
 map({'n'}, '<leader>tn', function() vim.cmd("NeoCodeium toggle") end)
-map({'n'}, '<leader>tt', function() vim.cmd("TypstPreviewToggle") end)
-map({'n'}, '<leader>tv', function() vim.cmd(":ToggleTerm direction=vertical size=80") end)
+map({'n'}, '<leader>tp', function() vim.cmd("TypstPreviewToggle") end)
+map({'n'}, '<leader>tt', function() vim.cmd(":ToggleTerm direction=vertical size=80") end)
 map({'n'}, '<leader>vr', function() vim.cmd("source $MYVIMRC") end)
 map({'n'}, '<leader>fc', function() vim.cmd("lua MiniFiles.open()") end)
 map({'n'}, '<leader>fp', function() vim.cmd("lua MiniFiles.open('~/personal/')") end)
 map({'n'}, '<leader>fn', function() vim.cmd("lua MiniFiles.open('~/personal/notes/')") end)
 map({'n'}, '<leader>fd', function() vim.cmd("lua MiniFiles.open('~/dotfiles/')") end)
+map({'n'}, '<leader>dh', function() print(vim.inspect(vim.treesitter.get_captures_at_cursor(0))) end)
 
 -- evergreen with pitch black bg
 require('mini.base16').setup({
