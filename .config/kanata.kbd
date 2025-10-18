@@ -1,0 +1,52 @@
+(defsrc
+esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+caps a    s    d    f    g    h    j    k    l    ;    '    ret
+lsft z    x    c    v    b    n    m    ,    .    /    rsft
+lctl lmet lalt           spc            ralt rmet cmp  rctl
+)
+
+(deflayer graphite
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+tab  b    l    d    w    z    lrld f    o    u    j    nop0 nop0 (layer-switch qwerty)
+caps n    r    t    s    g    y    h    a    e    i    nop0 nop0
+lsft q    x    m    c    v    k    p    nop0 nop0 nop0 rsft
+lctl @num @met           spc            @sym rmet cmp  rctl
+)
+
+
+(deflayer symbols
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+nop0 S-5  .    ,    '    S-'  S-6  S--  +    -    S-2  nop0 nop0 nop0
+nop0 [    S-[  S-9  <    S-1  =    S-;  S-8  /    ;    nop0 nop0
+nop0 ]    S-]  S-0  S-<  S-3  S-7  S-\  S-/  \    S-`  nop0
+nop0 nop0 nop0           nop0           nop0 nop0 nop0 nop0
+)
+
+(deflayer meta
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+nop0 A-b  A-l  A-d  A-w  nop0 nop0 nop0 nop0 S-4  nop0 nop0 nop0 nop0
+nop0 A-n  A-r  A-t  A-s  nop0 nop0 esc  ret  bspc nop0 nop0 nop0
+lsft nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+lctl nop0 nop0           nop0           nop0 nop0 nop0 nop0
+)
+
+(deflayer numbers
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 S-4  nop0 nop0 nop0 nop0 nop0
+nop0 1    2    3    4    5    6    7    8    9    0    nop0 nop0
+nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0 nop0
+nop0 nop0 nop0           nop0           nop0 nop0 nop0 nop0
+)
+
+(deflayer qwerty
+esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+tab  q    w    e    r    t    y    u    i    o    p    [    ]    (layer-switch graphite)
+caps a    s    d    f    g    h    j    k    l    ;    '    ret
+lsft z    x    c    v    b    n    m    ,    .    /    rsft
+lctl lmet lalt           spc            ralt rmet cmp  rctl
+)
+
+(defalias sym (layer-while-held symbols))
+(defalias num (layer-while-held numbers))
+(defalias met (layer-while-held meta))

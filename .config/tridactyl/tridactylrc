@@ -1,0 +1,1 @@
+set editorcmd wezterm start --always-new-process -- ~/.local/share/bob/nightly/bin/nvim %f

@@ -1,0 +1,4 @@
+[Default Applications]
+video/mp4=mpv.desktop
+image/jpeg=nsxiv.desktop
+image/png =nsxiv.desktop
