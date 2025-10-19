@@ -32,10 +32,11 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/lervag/vimtex" },
   { src = "https://github.com/akinsho/toggleterm.nvim" },
+  { src = "https://github.com/nvim-lualine/lualine.nvim" },
 })
 
 require "mini.ai".setup()
-require "mini.align".setup()
+require "mini.pick".setup()
 require "mini.pairs".setup()
 require "mini.comment".setup()
 require "mini.bufremove".setup()
@@ -100,27 +101,32 @@ map({'i'}, '<C-z>', "<ESC>ZZ")
 map({'i'}, '<C-b>', NeoCodeium.accept)
 
 -- fast access
-map({'n'}, '<leader>d', function() vim.cmd("lua MiniBufremove.delete()") end)
+map({'n'}, '<leader>x', function() vim.cmd("lua MiniBufremove.delete()") end)
 map({'n'}, '<leader>q', function() vim.cmd("q") end)
 map({'n'}, '<leader>w', vim.cmd.update)
 map({'n'}, 'gT', vim.cmd.bprevious)
 map({'n'}, 'gt', vim.cmd.bnext)
-map({'t'}, '<C-s>', '<C-\\><C-n>')
+map({'t'}, '<C-t>', '<C-\\><C-n>')
 map({'n', 'v'}, '<leader>y', '"+y')
 map({'n', 'v'}, '<leader>p', '"+p')
-map({'n', 'v'}, 'n', ":norm ")
 
 -- mnemonically coded
-map({'n'}, '<leader>lf', vim.lsp.buf.format)
-map({'n'}, '<leader>tl', function() vim.cmd("set list!") end)
+-- [T]oggle [P]ick [F]iles [N]ative [D]ebug
+
 map({'n'}, '<leader>tn', function() vim.cmd("NeoCodeium toggle") end)
 map({'n'}, '<leader>tp', function() vim.cmd("TypstPreviewToggle") end)
-map({'n'}, '<leader>tt', function() vim.cmd(":ToggleTerm direction=vertical size=80") end)
-map({'n'}, '<leader>vr', function() vim.cmd("source $MYVIMRC") end)
-map({'n'}, '<leader>fc', function() vim.cmd("lua MiniFiles.open()") end)
+map({'n'}, '<leader>tt', function() vim.cmd("ToggleTerm direction=vertical size=80") end)
+
+map({'n'}, '<leader>pf', function() vim.cmd("Pick files") end)
+map({'n'}, '<leader>ph', function() vim.cmd("Pick help") end)
+
+map({'n'}, '<leader>ff', function() vim.cmd("lua MiniFiles.open()") end)
 map({'n'}, '<leader>fp', function() vim.cmd("lua MiniFiles.open('~/personal/')") end)
-map({'n'}, '<leader>fn', function() vim.cmd("lua MiniFiles.open('~/personal/notes/')") end)
-map({'n'}, '<leader>fd', function() vim.cmd("lua MiniFiles.open('~/dotfiles/')") end)
+map({'n'}, '<leader>fn', function() vim.cmd("lua MiniFiles.open('~/personal/notes/'')") end)
+map({'n'}, '<leader>fd', function() vim.cmd("lua MiniFiles.open('~/dotfiles/'')") end)
+
+map({'n'}, '<leader>nr', function() vim.cmd("source $MYVIMRC") end)
+
 map({'n'}, '<leader>dh', function() print(vim.inspect(vim.treesitter.get_captures_at_cursor(0))) end)
 
 -- evergreen with pitch black bg
@@ -146,8 +152,14 @@ require('mini.base16').setup({
 })
 
 vim.cmd [[
-  highlight StatusLine   guibg=#101010
-  highlight ColorColumn  guibg=#101010
+  highlight Normal      guibg=#000000 guifg=#d3c6aa
+  highlight StatusLine  guibg=#101010
+  highlight ColorColumn guibg=#101010
+]]
+
+vim.cmd [[
+  autocmd FileType help wincmd L
+  autocmd FileType man  wincmd L
 ]]
 
 local enable_lsp = true
@@ -166,12 +178,15 @@ if enable_lsp then
   })
 end
 
-local disable_mouse = true
-if disable_mouse then
+local hardesttime = true
+if hardesttime then
   vim.opt.mouse = ""
-  for _, key in ipairs({ '<up>', '<down>', '<left>', '<right>' }) do
-    vim.keymap.set({'n','i'}, key, '<nop>', { silent = true })
-  end
+  vim.keymap.set({'n'},     '{',       '<nop>', { silent = true })
+  vim.keymap.set({'n'},     '}',       '<nop>', { silent = true })
+  vim.keymap.set({'n','i'}, '<Up>',    '<nop>', { silent = true })
+  vim.keymap.set({'n','i'}, '<Down>',  '<nop>', { silent = true })
+  vim.keymap.set({'n','i'}, '<Left>',  '<nop>', { silent = true })
+  vim.keymap.set({'n','i'}, '<Right>', '<nop>', { silent = true })
 end
 
 local kanata_hl = true

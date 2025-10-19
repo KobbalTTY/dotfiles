@@ -29,7 +29,7 @@ local config = {
         fg_color = "#a7c080",
       },
       inactive_tab = {
-        bg_color = "#111111",
+        bg_color = "#000000",
         fg_color = "#888888",
       },
     },

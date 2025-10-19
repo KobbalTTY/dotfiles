@@ -33,7 +33,7 @@ prompt_basename_setup() {
   if [[ -e /tmp/kobbalt ]]; then
     PS1=$'\e[6 q\n%F{114}kobbalt%f(); '
   else
-    PS1=$'\e[6 q\n%F{114}$( basename "$PWD" )%f(); '
+    PS1=$'\n%F{114}$( basename "$PWD" )%f(); '
   fi
 }
 prompt_themes+=( basename )
@@ -42,7 +42,7 @@ prompt basename
 PLUGINS_DIR="$HOME/.zsh/plugins/"
 mkdir -p "$PLUGINS_DIR"
 source "$PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-#source "$PLUGINS_DIR/zsh-vi-mode/zsh-vi-mode.zsh"
+source "$PLUGINS_DIR/zsh-vi-mode/zsh-vi-mode.zsh"
 source /nix/store/*-grc-*/etc/grc.zsh
 
 export LESS='-R'
