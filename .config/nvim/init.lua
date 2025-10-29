@@ -1,5 +1,3 @@
-vim.o.autochdir = true
-
 vim.o.ignorecase = true
 
 vim.o.number         = true
@@ -26,23 +24,24 @@ vim.g.maplocalleader = " "
 vim.pack.add({
   { src = "https://github.com/nvim-mini/mini.nvim" },
   { src = "https://github.com/monkoose/neocodeium" },
-  { src = "https://github.com/chomosuke/typst-preview.nvim" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
-  { src = "https://github.com/brenoprata10/nvim-highlight-colors" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-  { src = "https://github.com/lervag/vimtex" },
+  { src = "https://github.com/brenoprata10/nvim-highlight-colors" },
   { src = "https://github.com/akinsho/toggleterm.nvim" },
-  { src = "https://github.com/nvim-lualine/lualine.nvim" },
+  { src = "https://github.com/NStefan002/screenkey.nvim" },
+
+  { src = "https://codeberg.org/mfussenegger/nvim-fzy" },
+
+  { src = "https://github.com/mikavilpas/yazi.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/glottologist/keylog.nvim" },
 })
 
-require "mini.ai".setup()
-require "mini.pick".setup()
 require "mini.pairs".setup()
 require "mini.comment".setup()
 require "mini.bufremove".setup()
 require "mini.completion".setup()
 require "mini.trailspace".setup()
-require "mini.files".setup({ mappings = { close = 't' } })
 require('mini.hipatterns').setup({
   highlighters = {
     url = {
@@ -51,12 +50,15 @@ require('mini.hipatterns').setup({
     },
   },
 })
+
 require "mini.jump2d".setup({
   spotter = require "mini.jump2d".builtin_opts.word_start.spotter,
   labels = 'nrtshaeibldwfouj', -- easy spots for graphite layout
 })
 
 require "toggleterm".setup()
+require "screenkey".setup()
+require "keylog".setup()
 
 require "nvim-treesitter.configs".setup {
   ensure_installed = {
@@ -75,84 +77,79 @@ require "nvim-treesitter.configs".setup {
   indent = { enable = true }
 }
 
-require "typst-preview".setup({
-  port = 1984,
-  -- invert_colors = 'always', -- stylus extension works better
-  follow_cursor = true,
-})
-
-
-local NeoCodeium = require "neocodeium"
+NeoCodeium = require "neocodeium"
 NeoCodeium.setup()
 
-vim.g.vimtex_view_method = "zathura"
-vim.g.vimtex_view_forward_search_on_start = false
-vim.g.vimtex_compiler_latexmk = {
-  aux_dir = "/home/azalea/.cache/vimtex/aux/",
-  out_dir = "/home/azalea/.cache/vimtex/out/",
-}
+yazi = require "yazi"
+yazi.setup({
+  open_for_directories = true,
+})
+vim.g.loaded_netrw = 1
+
+fzy = require "fzy"
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  callback = function(ev)
+    local path = vim.api.nvim_buf_get_name(ev.buf)
+    if path ~= "" and vim.fn.isdirectory(path) == 1 then
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(ev.buf) then
+          vim.api.nvim_buf_delete(ev.buf, { force = true })
+          require("yazi").yazi(nil, path)
+        end
+      end)
+    end
+  end,
+})
 
 function map(modes, key, func)
   vim.keymap.set(modes, key, func, { silent = true })
 end
 
--- uncategorized
-map({'i'}, '<C-z>', "<ESC>ZZ")
-map({'i'}, '<C-b>', NeoCodeium.accept)
-
--- fast access
-map({'n'}, '<leader>x', function() vim.cmd("lua MiniBufremove.delete()") end)
-map({'n'}, '<leader>q', function() vim.cmd("q") end)
-map({'n'}, '<leader>w', vim.cmd.update)
-map({'n'}, 'gT', vim.cmd.bprevious)
-map({'n'}, 'gt', vim.cmd.bnext)
-map({'t'}, '<C-t>', '<C-\\><C-n>')
+map('n', 'gt', vim.cmd.bnext)
+map('n', 'gT', vim.cmd.bprevious)
+map('i', '<C-a>', NeoCodeium.accept)
 map({'n', 'v'}, '<leader>y', '"+y')
 map({'n', 'v'}, '<leader>p', '"+p')
+map('n', '<leader>w', vim.cmd.update)
+map('n', '<leader>d', function() vim.cmd("lua MiniBufremove.delete()") end)
+map('n', '<leader>a', function() vim.cmd("NeoCodeium toggle") end)
+map('n', '<leader>s', function() vim.cmd("Screenkey toggle") end)
+map('n', '<leader>f', function() vim.cmd("Yazi") end)
+map('n', '<leader>r', function() vim.cmd("source $MYVIMRC") end)
+map('n', '<leader>h', function() print(vim.inspect(vim.treesitter.get_captures_at_cursor(0))) end)
+map('n', '<leader>nc', function() fzy.execute('fd', fzy.sinks.edit_file) end)
+map('n', '<leader>nm', function() fzy.execute('cd ~/ && fd', fzy.sinks.edit_file) end)
+map('n', '<leader>nh', function() fzy.execute("cd /hub/ && fd", fzy.sinks.edit_file) end)
 
--- mnemonically coded
--- [T]oggle [P]ick [F]iles [N]ative [D]ebug
+-- map('n', '<leader>t', function() vim.cmd("ToggleTerm direction=vertical size=80") end)
+-- map('t', '<C-t>', '<C-\\><C-n>')
 
-map({'n'}, '<leader>tn', function() vim.cmd("NeoCodeium toggle") end)
-map({'n'}, '<leader>tp', function() vim.cmd("TypstPreviewToggle") end)
-map({'n'}, '<leader>tt', function() vim.cmd("ToggleTerm direction=vertical size=80") end)
-
-map({'n'}, '<leader>pf', function() vim.cmd("Pick files") end)
-map({'n'}, '<leader>ph', function() vim.cmd("Pick help") end)
-
-map({'n'}, '<leader>ff', function() vim.cmd("lua MiniFiles.open()") end)
-map({'n'}, '<leader>fp', function() vim.cmd("lua MiniFiles.open('~/personal/')") end)
-map({'n'}, '<leader>fn', function() vim.cmd("lua MiniFiles.open('~/personal/notes/'')") end)
-map({'n'}, '<leader>fd', function() vim.cmd("lua MiniFiles.open('~/dotfiles/'')") end)
-
-map({'n'}, '<leader>nr', function() vim.cmd("source $MYVIMRC") end)
-
-map({'n'}, '<leader>dh', function() print(vim.inspect(vim.treesitter.get_captures_at_cursor(0))) end)
-
--- evergreen with pitch black bg
+local saturation = 30
+local light      = 70
+local hsl_to_hex = dofile("/hub/include/lua/hsl-to-hex.lua")
 require('mini.base16').setup({
   palette = {
-    base00 = "#000000", -- background
-    base01 = "#000000", -- grey0
-    base02 = "#303030", -- grey1
-    base03 = "#909090", -- grey2
-    base04 = "#d3c6aa", -- fg
-    base05 = "#d3c6aa", -- fg
-    base06 = "#dbbc7f", -- yellow
-    base07 = "#ffffff", -- brightfg
-    base08 = "#e67e80", -- red
-    base09 = "#e69875", -- orange
-    base0A = "#dbbc7f", -- yellow
-    base0B = "#a7c080", -- green
-    base0C = "#83c092", -- aqua
-    base0D = "#7fbbb3", -- blue
-    base0E = "#d699b6", -- purple
-    base0F = "#e67e80", -- red
+    base00 = hsl_to_hex(0,   0, 0),  -- background
+    base01 = hsl_to_hex(0,   0, 0),  -- dark grey
+    base02 = hsl_to_hex(0,   0, 20), -- grey
+    base03 = hsl_to_hex(0,   0, 30), -- light grey
+    base04 = hsl_to_hex(0,   0, light), -- fg low contrast
+    base05 = hsl_to_hex(0,   0, light), -- fg
+    base06 = hsl_to_hex(50,  saturation, light), -- yellow
+    base07 = hsl_to_hex(50,  saturation, light), -- bright yellow / bright fg
+    base08 = hsl_to_hex(0,   saturation, light), -- red
+    base09 = hsl_to_hex(30,  saturation, light), -- orange
+    base0A = hsl_to_hex(60,  saturation, light), -- yellow
+    base0B = hsl_to_hex(120, saturation, light), -- green
+    base0C = hsl_to_hex(180, saturation, light), -- cyan / aqua
+    base0D = hsl_to_hex(220, saturation, light), -- blue
+    base0E = hsl_to_hex(280, saturation, light), -- purple
+    base0F = hsl_to_hex(10,  saturation, light), -- brown / muted red
   }
 })
 
 vim.cmd [[
-  highlight Normal      guibg=#000000 guifg=#d3c6aa
   highlight StatusLine  guibg=#101010
   highlight ColorColumn guibg=#101010
 ]]
@@ -161,6 +158,30 @@ vim.cmd [[
   autocmd FileType help wincmd L
   autocmd FileType man  wincmd L
 ]]
+
+local restraints = true
+if restraints then
+  vim.opt.mouse = ""
+  vim.keymap.set({'n', 'i', 'v'}, '<Up>',    '<nop>', { silent = true })
+  vim.keymap.set({'n', 'i', 'v'}, '<Down>',  '<nop>', { silent = true })
+  vim.keymap.set({'n', 'i', 'v'}, '<Left>',  '<nop>', { silent = true })
+  vim.keymap.set({'n', 'i', 'v'}, '<Right>', '<nop>', { silent = true })
+end
+
+local kanata_hl = true
+if kanata_hl then
+  vim.api.nvim_set_hl(0, "NoOp", { fg = "#707070" })
+  vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = "*.kbd",
+    callback = function()
+      vim.cmd([[
+        syn match NoOp "\v(_|XX|✗|∅|•|nop[0-9])"
+        syn match Delimiter "[()]"
+        hi link Delimiter Delimiter
+      ]])
+    end,
+  })
+end
 
 local enable_lsp = true
 if enable_lsp then
@@ -178,28 +199,8 @@ if enable_lsp then
   })
 end
 
-local hardesttime = true
-if hardesttime then
-  vim.opt.mouse = ""
-  vim.keymap.set({'n'},     '{',       '<nop>', { silent = true })
-  vim.keymap.set({'n'},     '}',       '<nop>', { silent = true })
-  vim.keymap.set({'n','i'}, '<Up>',    '<nop>', { silent = true })
-  vim.keymap.set({'n','i'}, '<Down>',  '<nop>', { silent = true })
-  vim.keymap.set({'n','i'}, '<Left>',  '<nop>', { silent = true })
-  vim.keymap.set({'n','i'}, '<Right>', '<nop>', { silent = true })
-end
-
-local kanata_hl = true
-if kanata_hl then
-  vim.api.nvim_set_hl(0, "NoOp", { fg = "#707070" })
-  vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    pattern = "*.kbd",
-    callback = function()
-      vim.cmd([[
-        syn match NoOp "\v(_|XX|✗|∅|•|nop[0-9])"
-        syn match Delimiter "[()]"
-        hi link Delimiter Delimiter
-      ]])
-    end,
-  })
+-- the builtin terminal doesnt have the right bg without this
+if vim.g._config_reloaded ~= true then
+    vim.g._config_reloaded = true
+    dofile(vim.env.MYVIMRC)
 end

@@ -1,64 +1,52 @@
-local wezterm = require 'wezterm';
+local wezterm = require 'wezterm'
+local hsl_to_hex = dofile("/hub/include/lua/hsl-to-hex.lua")
+
+local sat_normal, light_normal = 15, 65
+local sat_bright, light_bright = 15, 65
 
 local config = {
-
   audible_bell = "Disabled",
-  visual_bell = {
-    fade_in_duration_ms  = 0,
-    fade_out_duration_ms = 0,
-    target               = 'CursorColor',
-  },
-
-  font_size            = 11,
-  color_scheme         = "Everforest Dark (Gogh)",
+  visual_bell = {fade_in_duration_ms=0, fade_out_duration_ms=0, target='CursorColor'},
+  font_size = 11,
   default_cursor_style = "BlinkingBlock",
-  scrollback_lines     = 10000,
-
+  scrollback_lines = 10000,
   show_new_tab_button_in_tab_bar = false,
-  use_fancy_tab_bar = false,
-  use_fancy_tab_bar = false,
-  enable_tab_bar = true,
-
-  leader = { key = 'Space', mods = 'CTRL', timeout_milliseconds = 1000 },
-  colors = {
-    background = '#000000',
-    tab_bar = {
-      background = "#000000",
-      active_tab = {
-        bg_color = "#000000",
-        fg_color = "#a7c080",
-      },
-      inactive_tab = {
-        bg_color = "#000000",
-        fg_color = "#888888",
-      },
-    },
-  },
-
+  enable_tab_bar = false,
 }
 
-local function map(key, action)
-  config.keys = config.keys or {}
-  table.insert(config.keys, { key = key, mods = 'LEADER', action = action })
-end
+config.color_schemes = {
+  ["HSL Base16"] = {
+    foreground = hsl_to_hex(0, 0, light_bright),
+    background = hsl_to_hex(0, 0, 0),
+    cursor_bg  = hsl_to_hex(0, 0, light_bright),
+    cursor_fg  = hsl_to_hex(0, 0, 0),
+    selection_bg = hsl_to_hex(0, 0, 20),
+    selection_fg = hsl_to_hex(0, 0, light_bright),
 
-map('Enter', wezterm.action.ActivateCopyMode)
-map('p', wezterm.action.PasteFrom 'Clipboard')
+    ansi = {
+      hsl_to_hex(0, 0, 0),
+      hsl_to_hex(0, sat_normal, light_normal),
+      hsl_to_hex(120, sat_normal, light_normal),
+      hsl_to_hex(60, sat_normal, light_normal),
+      hsl_to_hex(220, sat_normal, light_normal),
+      hsl_to_hex(280, sat_normal, light_normal),
+      hsl_to_hex(180, sat_normal, light_normal),
+      hsl_to_hex(0, 0, light_normal),
+    },
 
-map('n', wezterm.action.SpawnTab 'CurrentPaneDomain')
-map('d', wezterm.action.CloseCurrentPane { confirm = true })
+    brights = {
+      hsl_to_hex(0, 0, 30),
+      hsl_to_hex(0, sat_bright, light_bright),
+      hsl_to_hex(120, sat_bright, light_bright),
+      hsl_to_hex(60, sat_bright, light_bright),
+      hsl_to_hex(220, sat_bright, light_bright),
+      hsl_to_hex(280, sat_bright, light_bright),
+      hsl_to_hex(180, sat_bright, light_bright),
+      hsl_to_hex(0, 0, light_bright),
+    },
+  },
+}
 
-map('h', wezterm.action.ActivatePaneDirection 'Left')
-map('j', wezterm.action.ActivatePaneDirection 'Down')
-map('k', wezterm.action.ActivatePaneDirection 'Up')
-map('l', wezterm.action.ActivatePaneDirection 'Right')
-
-map('b', wezterm.action.ActivateTabRelative(-1))
-map('w', wezterm.action.ActivateTabRelative(1))
-
-map('{', wezterm.action.ScrollByPage(1))
-map('}', wezterm.action.ScrollByPage(-1))
-
-map('v', wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' })
+config.color_scheme = "HSL Base16"
 
 return config

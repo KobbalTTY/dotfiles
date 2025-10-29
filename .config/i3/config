@@ -25,11 +25,11 @@ bindsym $mod+Shift+l move container to workspace number $ws2
 bindsym $mod+Shift+d move container to workspace number $ws3
 bindsym $mod+Shift+w move container to workspace number $ws4
 
-exec --nn-startup-id xsetroot -solid black
+exec --no-startup-id xsetroot -solid black
 exec --no-startup-id xset s off -dpms s noblank
 exec --no-startup-id picom
 exec_always --no-startup-id pkill unclutter || true; unclutter -idle 1 -root
-exec_always --no-startup-id pgrep wezterm || wezterm start zsh -ic vim
+exec_always --no-startup-id pgrep wezterm || wezterm start
 assign [instance="brave-browser"] $ws2
 
 bindsym $mod+u scratchpad show

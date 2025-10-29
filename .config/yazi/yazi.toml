@@ -1,0 +1,12 @@
+[mgr]
+title_format = ""
+sort_by = "natural"
+sort_sensitive = false
+sort_dir_first = true
+sort_translit = true
+linemode = "none"
+mouse_events = []
+
+[preview]
+wrap = "yes"
+image_filter = "nearest"
