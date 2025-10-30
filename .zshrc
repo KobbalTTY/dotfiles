@@ -46,15 +46,6 @@ source "$PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$PLUGINS_DIR/zsh-vi-mode/zsh-vi-mode.zsh"
 source /nix/store/*-grc-*/etc/grc.zsh
 
-# Pager
-export LESS='-R'
-LESS_TERMCAP_md=$'\e[01;36m' \
-LESS_TERMCAP_me=$'\e[0m' \
-LESS_TERMCAP_se=$'\e[0m' \
-LESS_TERMCAP_so=$'\e[38;5;15;48;5;17m' \
-LESS_TERMCAP_ue=$'\e[0m' \
-LESS_TERMCAP_us=$'\e[01;32m' \
-
 # Env variables
 COMPOSE_CACHE_DIR="$HOME/.cache/docker/compose"
 export GNUPGHOME="$HOME/dotsecrets/.gnupg"
@@ -71,10 +62,17 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 stty ixon
 
 # Editor
-EDITOR="$HOME/.local/share/bob/nightly/bin/nvim"
-alias v="$EDITOR"
-alias nvim="$EDITOR"
+NVIM_PATH="$HOME/.local/share/bob/nightly/bin/nvim"
+EDITOR="$NVIM_PATH"
+alias v="$NVIM_PATH"
+alias nvim="$NVIM_PATH"
 
+# Pager
+pager() {
+  nvim -R -c 'setlocal columns=80 wrap | setfiletype man' -
+}
+export PAGER=pager
+export MANPAGER="$NVIM_PATH -c 'setlocal columns=80 wrap' +Man!"
 alias s="/hub/include/bin/sessionizer"
 
 # System aliases
@@ -105,6 +103,10 @@ bindkey '^h' cdhub
 cb() { "$@" | xclip -selection clipboard }
 
 bs() { brightnessctl s $(( $1 * 100 ))% }
+
+hp() {
+  $1 --help | $PAGER
+}
 
 kobbalt() {
   onoff=$1
